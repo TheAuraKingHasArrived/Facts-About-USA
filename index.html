@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>USA Explorer</title>
+    <!-- Link to the app settings -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#0A2540">
+    
+    <style>
+        :root {
+            --primary-blue: #0A2540;
+            --us-red: #B22234;
+            --light-bg: #F4F6F9;
+            --text-dark: #333333;
+        }
+        
+        * {
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--light-bg);
+            color: var(--text-dark);
+            overflow-x: hidden;
+        }
+
+        header {
+            background-color: var(--primary-blue);
+            color: white;
+            text-align: center;
+            padding: 20px 15px;
+            font-size: 22px;
+            font-weight: 700;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+        }
+
+        .container {
+            padding: 20px;
+            padding-bottom: 90px; /* Prevents navigation overlap */
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .card {
+            background: white;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            border-left: 6px solid var(--us-red);
+            transition: transform 0.2s;
+        }
+
+        h2 {
+            margin-top: 0;
+            color: var(--primary-blue);
+            font-size: 20px;
+        }
+
+        p {
+            line-height: 1.6;
+            margin-bottom: 8px;
+        }
+
+        .page {
+            display: none;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        .active-page {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Bottom App Navigation Bar */
+        nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: white;
+            display: flex;
+            justify-content: space-around;
+            border-top: 1px solid #E5E9F0;
+            box-shadow: 0 -4px 12px rgba(0,0,0,0.08);
+            z-index: 100;
+        }
+
+        nav button {
+            background: none;
+            border: none;
+            padding: 16px 10px;
+            flex: 1;
+            font-size: 14px;
+            font-weight: 600;
+            color: #8898AA;
+            cursor: pointer;
+            transition: color 0.2s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        nav button.active-tab {
+            color: var(--us-red);
+        }
+    </style>
+</head>
+<body>
+
+    <header id="app-title">USA Explorer</header>
+
+    <div class="container">
+        <!-- Page 1: Overview -->
+        <div id="overview" class="page active-page">
+            <div class="card">
+                <h2>Welcome to the USA</h2>
+                <p>The United States of America is a federal republic comprised of 50 states, a federal district (Washington, D.C.), and several territories.</p>
+            </div>
+            <div class="card">
+                <h2>Quick Stats</h2>
+                <p><strong>Capital:</strong> Washington, D.C.</p>
+                <p><strong>Population:</strong> ~345 Million</p>
+                <p><strong>Currency:</strong> US Dollar ($)</p>
+            </div>
+        </div>
+
+        <!-- Page 2: Landmarks -->
+        <div id="landmarks" class="page">
+            <div class="card">
+                <h2>Statue of Liberty</h2>
+                <p>Located on Liberty Island in New York Harbor, this monument represents freedom and democracy worldwide.</p>
+            </div>
+            <div class="card">
+                <h2>Grand Canyon</h2>
+                <p>A massive, steep-sided canyon carved by the Colorado River in Arizona, famous for its overwhelming size and colorful landscape.</p>
+            </div>
+        </div>
+
+        <!-- Page 3: History -->
+        <div id="history" class="page">
+            <div class="card">
+                <h2>Independence Day</h2>
+                <p>The nation celebrates its birth on <strong>July 4, 1776</strong>, marking the adoption of the Declaration of Independence.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile Navigation Tab Bar -->
+    <nav>
+        <button class="active-tab" onclick="switchPage('overview', this)">ℹ️ Overview</button>
+        <button onclick="switchPage('landmarks', this)">🗽 Landmarks</button>
+        <button onclick="switchPage('history', this)">📜 History</button>
+    </nav>
+
+    <script>
+        // Page switching functionality
+        function switchPage(pageId, button) {
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.remove('active-page');
+            });
+            document.getElementById(pageId).classList.add('active-page');
+            
+            document.querySelectorAll('nav button').forEach(btn => {
+                btn.classList.remove('active-tab');
+            });
+            button.classList.add('active-tab');
+            
+            // Scroll back to top smoothly when switching pages
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Register Service Worker for PWA compliance
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('sw.js')
+                    .then(reg => console.log('Service Worker registered successfully.'))
+                    .catch(err => console.log('Service Worker registration failed:', err));
+            });
+        }
+    </script>
+</body>
+</html>
